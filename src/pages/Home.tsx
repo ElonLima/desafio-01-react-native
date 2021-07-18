@@ -1,43 +1,57 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 
-import { Header } from '../components/Header';
-import { Task, TasksList } from '../components/TasksList';
-import { TodoInput } from '../components/TodoInput';
+import { Header } from "../components/Header";
+import { Task, TasksList } from "../components/TasksList";
+import { TodoInput } from "../components/TodoInput";
 
 export function Home() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+    const [tasks, setTasks] = useState<Task[]>([]);
 
-  function handleAddTask(newTaskTitle: string) {
-    //TODO - add new task
-  }
+    function handleAddTask(newTaskTitle: string) {
+        const data: Task = {
+            id: new Date().getTime(),
+            title: newTaskTitle,
+            done: false,
+        };
 
-  function handleToggleTaskDone(id: number) {
-    //TODO - toggle task done if exists
-  }
+        setTasks([...tasks, data]);
+    }
 
-  function handleRemoveTask(id: number) {
-    //TODO - remove task from state
-  }
+    function handleToggleTaskDone(id: number) {
+        const updatedTasks = tasks.map((task) => ({ ...task }));
+        const foundItem = updatedTasks.find((item) => item.id === id);
+        if (!foundItem) return;
+        foundItem.done = !foundItem.done;
+        setTasks(updatedTasks);
+    }
 
-  return (
-    <View style={styles.container}>
-      <Header tasksCounter={tasks.length} />
+    function handleRemoveTask(id: number) {
+        const task = tasks.some((e) => e.id === id);
+        if (!task) return;
+        const newTaskList = tasks.filter((e) => e.id !== id);
+        console.log(newTaskList);
+        setTasks(newTaskList);
+    }
 
-      <TodoInput addTask={handleAddTask} />
+    return (
+        <View style={styles.container}>
+            <Header tasksCounter={tasks.length} />
 
-      <TasksList 
-        tasks={tasks} 
-        toggleTaskDone={handleToggleTaskDone}
-        removeTask={handleRemoveTask} 
-      />
-    </View>
-  )
+            <TodoInput addTask={handleAddTask} />
+
+            <TasksList
+                tasks={tasks}
+                toggleTaskDone={handleToggleTaskDone}
+                removeTask={handleRemoveTask}
+            />
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#EBEBEB'
-  }
-})
+    container: {
+        flex: 1,
+        backgroundColor: "#EBEBEB",
+    },
+});
